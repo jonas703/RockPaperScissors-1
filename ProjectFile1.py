@@ -105,7 +105,7 @@ def minusOne(all_combinations):
         print(f"\nDROP {possMinusOne[0]['p1_move']} from possible combinations to minimize Player 1 loss.")
         return
     else: 
-      # Check if all entries are identical if there are multiple losing combinations check the losing combinations against the possible draws
+      # Check if all entries are identical if there are multiple losing combinations check the losing combinations against the possible wins
         first_entry = possMinusOne[0]
         all_same = all(entry == first_entry for entry in possMinusOne)
         
@@ -116,7 +116,13 @@ def minusOne(all_combinations):
     losing_p1_moves = list({c['p1_move'] for c in possMinusOne})
     print(f"\nMultiple different options to DROP to minimize Player 1 loss: {losing_p1_moves}")
 
-    # Prefer a losing combo that also appears as a possible draw
+    # Prefer a losing combo that also appears as a possible win
+    match = next((lose for lose in possMinusOne if lose in possWin), None)
+    if match:
+        print(f"\nDROP {match['p1_move']} (losing combo also appears as a possible win).")
+        return
+    
+    # Next, prefer a losing combo that also appears as a possible draw
     match = next((lose for lose in possMinusOne if lose in possDraw), None)
     if match:
         print(f"\nDROP {match['p1_move']} (losing combo also appears as a possible draw).")
