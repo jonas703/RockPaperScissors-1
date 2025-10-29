@@ -174,7 +174,7 @@ def minusOne(all_combinations):
         #                     break
                     
  
-
+'''
 player1 = player1Choice(2)
 player2 = player2Choice(2)
 # Example usage after getting player choices
@@ -187,10 +187,96 @@ probMatrix = [[PROBWin, PROBLose, PROBDraw]]
 print(f"\nProbability Matrix: {probMatrix}")
 print(f"\nProbability of Player 1 Winning: {PROBWin}")
 minusOne (all_combinations)
+'''
 
 
 
 
 
 
+# Alex's Attempts/ideas
 
+def RPSMinus1(player1_choices, player2_choices):
+    results = []
+    for p1 in player1_choices:
+        for p2 in player2_choices:
+            p1_index = RPS.index(p1)
+            p2_index = RPS.index(p2)
+            outcome = WorL_matrix[p2_index][p1_index]
+            results.append((p1, p2, outcome))
+    
+    losing_combos = [res for res in results if res[2] == -1]
+    winning_combos = [res for res in results if res[2] == 1]
+    
+    if not losing_combos:
+        print("ALL ROADS LEAD TO VICTORY!")
+        return
+    
+    losing_p1_moves = [combo[0] for combo in losing_combos]
+    unique_losing_moves = set(losing_p1_moves)
+    
+    '''
+    # good to guarentee no loss of points, but doesnt account for other player likely move
+    if len(unique_losing_moves) == 1:
+        move_to_drop = unique_losing_moves.pop()
+        print(f"\nDROP {move_to_drop} from possible combinations to minimize Player 1 loss.")
+        return results
+    '''
+    valuation = {choice:0 for choice in player1_choices}
+    for move in winning_combos: 
+        valuation[move[0]] += 1
+    for move in losing_combos:
+        valuation[move[0]] -= 1
+    
+    print(f"\nMultiple different options to DROP to minimize Player 1 loss: {list(unique_losing_moves)}")
+    print(f"\nValuation of losing moves (no weighting): {valuation}")
+
+
+    '''
+    # Does not include weighing logic of player 2 likely moves
+    for move in unique_losing_moves:
+        if any(combo[0] == move for combo in draws):
+            print(f"\nDROP {move} (losing combo also appears as a possible draw).")
+
+            return results
+        elif any(combo[0] == move for combo in winning_combos):
+            print(f"\nDROP {move} (losing combo also appears as a possible win).")
+            return results
+    '''
+
+
+    # Considering player 2 likely moves and weight accordingly
+    p2Valuation = {choice:0 for choice in player2_choices}
+    for move in winning_combos:
+        p2Valuation[move[1]] -= 1
+    for move in losing_combos:
+        p2Valuation[move[1]] += 1
+    p2LikelyChoice = max(p2Valuation, key=p2Valuation.get)
+    # print(f"\nValuation of Player 2 moves: {p2Valuation}")
+    # print line to check (just for me while coding)
+
+    weightedValuation = {choice:0 for choice in player1_choices}
+    for move in results:
+        drop_score = 0
+        if move[1] == p2LikelyChoice:
+            if move[2] == 1:
+                drop_score += 1.5
+            elif move[2] == -1:
+                drop_score -= 1.5
+        else:
+            if move[2] == 1:
+                drop_score += 1
+            elif move[2] == -1:
+                drop_score -= 0.5
+        weightedValuation[move[0]] = drop_score
+    print(f"\nWeighted Valuation of moves: {weightedValuation}")
+
+    return results
+
+
+# Demo
+
+P1 = player1Choice(2)
+P2 = player2Choice(2)
+results = RPSMinus1(P1, P2)
+# print(f"Results: {results}")
