@@ -116,17 +116,12 @@ def minusOne(all_combinations):
     losing_p1_moves = list({c['p1_move'] for c in possMinusOne})
     print(f"\nMultiple different options to DROP to minimize Player 1 loss: {losing_p1_moves}")
 
-    # Prefer a losing combo that also appears as a possible win
-    match = next((lose for lose in possMinusOne if lose in possWin), None)
-    if match:
-        print(f"\nDROP {match['p1_move']} (losing combo also appears as a possible win).")
-        return
-    
-    # Next, prefer a losing combo that also appears as a possible draw
+    # Prefer a losing combo that also appears as a possible draw (lower score value)
     match = next((lose for lose in possMinusOne if lose in possDraw), None)
     if match:
         print(f"\nDROP {match['p1_move']} (losing combo also appears as a possible draw).")
         return
+    
 
     # Otherwise recommend the most frequent losing p1_move
     from collections import Counter
@@ -208,7 +203,7 @@ def RPSMinus1(player1_choices, player2_choices):
     losing_combos = [res for res in results if res[2] == -1]
     winning_combos = [res for res in results if res[2] == 1]
     
-    if not losing_combos:
+    if len(winning_combos) == 4:
         print("ALL ROADS LEAD TO VICTORY!")
         return
     
@@ -268,7 +263,7 @@ def RPSMinus1(player1_choices, player2_choices):
                 drop_score += 1
             elif move[2] == -1:
                 drop_score -= 0.5
-        weightedValuation[move[0]] = drop_score
+        weightedValuation[move[0]] += drop_score
     print(f"\nWeighted Valuation of moves: {weightedValuation}")
 
     return results
