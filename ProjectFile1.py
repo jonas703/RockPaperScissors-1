@@ -191,7 +191,7 @@ minusOne (all_combinations)
 
 # Alex's Attempts/ideas
 
-def RPSMinus1(player1_choices, player2_choices):
+def RPSMinus1(player1_choices, player2_choices, strategy=3):
     results = []
     for p1 in player1_choices:
         for p2 in player2_choices:
@@ -250,19 +250,28 @@ def RPSMinus1(player1_choices, player2_choices):
     # print(f"\nValuation of Player 2 moves: {p2Valuation}")
     # print line to check (just for me while coding)
 
+
+    # dictionary of values for different strategies
+    values = {1:[2,1,-0.5,1.5,1,-0.5], 2:[1,-1.5,0.5,1,1,0.5], 3:[1.5,1,0,1,0.5,0], 4:[1,1,0,1,1,0]}
+
+    
     weightedValuation = {choice:0 for choice in player1_choices}
     for move in results:
         drop_score = 0
         if move[1] == p2LikelyChoice:
             if move[2] == 1:
-                drop_score += 1.5
+                drop_score += values[strategy][0]
             elif move[2] == -1:
-                drop_score -= 1.5
+                drop_score -= values[strategy][1]
+            else:
+                drop_score += values[strategy][2]
         else:
             if move[2] == 1:
-                drop_score += 1
+                drop_score += values[strategy][3]
             elif move[2] == -1:
-                drop_score -= 0.5
+                drop_score -= values[strategy][4]
+            else:
+                drop_score += values[strategy][5]
         weightedValuation[move[0]] += drop_score
     print(f"\nWeighted Valuation of moves: {weightedValuation}")
 
@@ -273,5 +282,6 @@ def RPSMinus1(player1_choices, player2_choices):
 
 P1 = player1Choice(2)
 P2 = player2Choice(2)
-results = RPSMinus1(P1, P2)
+strategy = input("Enter 1 for agressive, 2 for conservative, or 3 for balanced, 4 for no strategy: ")
+results = RPSMinus1(P1, P2, strategy)
 # print(f"Results: {results}")
