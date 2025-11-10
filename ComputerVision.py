@@ -1,5 +1,6 @@
 import cv2 as cv
 import mediapipe as mp
+import time
 
 """
 An older version of python might need to be used to run mediapipe.
@@ -22,11 +23,16 @@ mp_drawing_styles = mp.solutions.drawing_styles
 def getPlayerMove(hand_landmarks):
     landmarks = hand_landmarks.landmark
     # attempted implementation of 'middle finger to exit' gesture (not currently working)
-    if (landmarks[12].y > landmarks[11].y and landmarks[16].y < landmarks[14].y and 
-        landmarks[20].y < landmarks[18].y and landmarks[8].y < landmarks[6].y and
-        (landmarks[5].x > landmarks[0].x and landmarks[0] > landmarks[17].x
-         or landmarks[5].x < landmarks[0].x and landmarks[0] < landmarks[17].x)):
-        return "Exit Game" # middle finger gesture to exit game
+    timer = 3
+    while (landmarks[12].y < landmarks[11].y and landmarks[16].y > landmarks[14].y and 
+        landmarks[20].y > landmarks[18].y and landmarks[8].y > landmarks[6].y and
+        (landmarks[5].x > landmarks[0].x and landmarks[0].x > landmarks[17].x
+        or landmarks[5].x < landmarks[0].x and landmarks[0].x < landmarks[17].x)):
+        print("Exit gesture detected, closing in %d seconds..." % (timer))
+        time.sleep(10)
+        timer -= 1
+        if timer == 0:
+            return "Exit Game" # middle finger gesture to exit game
     
     if landmarks[0].x < landmarks[9].x:  # Left hand
         # Flip x-coordinates for left hand to standardize orientation
@@ -88,6 +94,8 @@ with mp_hands.Hands(model_complexity = 0,
         """
 
         gestures = results.multi_hand_landmarks
+        #if gestures:
+            #gestures.sort(key=lambda hand: hand.landmark[0].x)  # Sort hands by x-coordinate to assign players
 
         if 0 <= clock < 20:
             gametext = "Get Ready!"
@@ -96,7 +104,6 @@ with mp_hands.Hands(model_complexity = 0,
         elif clock <50: gametext = "2"
         elif clock <70: gametext = "1"
         elif clock <90:
-            gestures = results.multi_hand_landmarks
             if gestures and len(gestures) == 2:
                 p1_move = getPlayerMove(gestures[0])
                 p2_move = getPlayerMove(gestures[1])
@@ -130,7 +137,7 @@ with mp_hands.Hands(model_complexity = 0,
         # Close the program by pressing 'q'
         if cv.waitKey(1) & 0xFF == ord('q'):
             break
-        if p1_move == "Exit Game" or p2_move == "Exit Game":
+        if gestures and getPlayerMove(gestures[0]) == "Exit Game":
             break
         
 
