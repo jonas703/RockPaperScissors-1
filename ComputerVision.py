@@ -134,9 +134,11 @@ with mp_hands.Hands(model_complexity = 0,
         if cv.waitKey(1) & 0xFF == ord('q'):
             break
 
+        ''' fun thing that works well with sideways thing
         if gestures and getPlayerMove(gestures[0]) == "Exit Game": # exit gesture detection
             print("\n\nExit gesture detected, closing program.\n\n")
             break
+        '''
         
 
 vid.release()

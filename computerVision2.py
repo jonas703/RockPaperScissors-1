@@ -2,6 +2,34 @@ import cv2 as cv
 import mediapipe as mp
 import time
 
+'''
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
+
+model_path = 'gesture_recognizer.task'
+base_options = BaseOptions(model_asset_path=model_path)
+
+BaseOptions = mp.tasks.BaseOptions
+GestureRecognizer = mp.tasks.vision.GestureRecognizer
+GestureRecognizerOptions = mp.tasks.vision.GestureRecognizerOptions
+GestureRecognizerResult = mp.tasks.vision.GestureRecognizerResult
+VisionRunningMode = mp.tasks.vision.RunningMode
+
+# Create a gesture recognizer instance with the live stream mode:
+def print_result(result: GestureRecognizerResult, output_image: mp.Image, timestamp_ms: int):
+    print('gesture recognition result: {}'.format(result))
+
+options = GestureRecognizerOptions(
+    base_options=BaseOptions(model_asset_path='/path/to/model.task'),
+    running_mode=VisionRunningMode.LIVE_STREAM,
+    result_callback=print_result)
+with GestureRecognizer.create_from_options(options) as recognizer:
+  # The detector is initialized. Use it here.
+  # ...
+'''
+
+
+
 """
 An older version of python might need to be used to run mediapipe.
 I got it to work with python 3.11.4
@@ -31,9 +59,9 @@ def getPlayerMove(gestures, gameStyle=1):
     
     """
 
-    if len(gestures)==2:
+    if gestures and len(gestures)==2:
         gameStyle = 1
-    elif len(gestures)==4:
+    elif gestures and len(gestures)==4:
         gameStyle = 2
     else:
         gameStyle = 3
@@ -44,7 +72,7 @@ def getPlayerMove(gestures, gameStyle=1):
         player1_move = {'player': "Player One",'move1': None}
         player2_move = {'player':"Player Two",'move1': None}
         for gesture in gestures:
-            player_dict = player1_move if (gestures[gesture].landmark[0].y) > 240 else player2_move
+            player_dict = player1_move if (gesture.landmark[0].y) > (gesture.landmark[0].y) else player2_move
             player_dict['move1'] = choice(gesture)
 
         return player1_move, player2_move
@@ -77,10 +105,10 @@ def choice(hand_landmarks):
     ringTip = landmarks[16]
     pinkyTip = landmarks[20]
     #thumbknuckle = landmarks[2]
-    indexknuckle = landmarks[5]
-    middleknuckle = landmarks[9]
-    ringknuckle = landmarks[13]
-    pinkyknuckle = landmarks[17]
+    indexknuckle = landmarks[6]
+    middleknuckle = landmarks[10]
+    ringknuckle = landmarks[14]
+    pinkyknuckle = landmarks[18]
     wrist = landmarks[0]
     
     if wrist.y > 240:
@@ -183,3 +211,5 @@ with mp_hands.Hands(model_complexity = 0,
 
 vid.release()
 cv.destroyAllWindows()
+
+mp.canned_gestures_classifier_options
