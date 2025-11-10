@@ -21,6 +21,13 @@ mp_drawing_styles = mp.solutions.drawing_styles
 
 def getPlayerMove(hand_landmarks):
     landmarks = hand_landmarks.landmark
+    # attempted implementation of 'middle finger to exit' gesture (not currently working)
+    if (landmarks[12].y > landmarks[11].y and landmarks[16].y < landmarks[14].y and 
+        landmarks[20].y < landmarks[18].y and landmarks[8].y < landmarks[6].y and
+        (landmarks[5].x > landmarks[0].x and landmarks[0] > landmarks[17].x
+         or landmarks[5].x < landmarks[0].x and landmarks[0] < landmarks[17].x)):
+        return "Exit Game" # middle finger gesture to exit game
+    
     if landmarks[0].x < landmarks[9].x:  # Left hand
         # Flip x-coordinates for left hand to standardize orientation
         for lm in landmarks:
@@ -29,7 +36,7 @@ def getPlayerMove(hand_landmarks):
         return "Rock" # uses coordinates of joints to determine if fingers are curled for rock
     elif (landmarks[14].y < landmarks[16].y and landmarks[18].y < landmarks[20].y) or (landmarks[14].x < landmarks[16].x and landmarks[18].x < landmarks[20].x):
         return "Scissors" # uses coordinates of joints to determine if ring and pinkie fingers are curled for scissors
-    elif all([landmarks[i+1].x > landmarks[i+3].x for i in range(9,20,4)]):
+    elif all([landmarks[i+2].x > landmarks[i+3].x for i in range(9,20,4)]):
         return "Paper" # check joints for if paper
     else: 
         return "Unknown"
@@ -80,6 +87,8 @@ with mp_hands.Hands(model_complexity = 0,
 
         """
 
+        gestures = results.multi_hand_landmarks
+
         if 0 <= clock < 20:
             gametext = "Get Ready!"
             success = True
@@ -116,10 +125,14 @@ with mp_hands.Hands(model_complexity = 0,
         clock = (clock + 1) % 100
 
         cv.imshow('frame', frame)
-
+        
+        
         # Close the program by pressing 'q'
         if cv.waitKey(1) & 0xFF == ord('q'):
             break
+        if p1_move == "Exit Game" or p2_move == "Exit Game":
+            break
+        
 
 vid.release()
 cv.destroyAllWindows()
