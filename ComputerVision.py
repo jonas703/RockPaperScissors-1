@@ -24,14 +24,10 @@ def getPlayerMove(hand_landmarks):
     landmarks = hand_landmarks.landmark
     # attempted implementation of 'middle finger to exit' gesture (not currently working)
     timer = 3
-    while (landmarks[12].y < landmarks[11].y and landmarks[16].y > landmarks[14].y and 
+    if (landmarks[12].y < landmarks[11].y and landmarks[16].y > landmarks[14].y and 
         landmarks[20].y > landmarks[18].y and landmarks[8].y > landmarks[6].y and
         (landmarks[5].x > landmarks[0].x and landmarks[0].x > landmarks[17].x
         or landmarks[5].x < landmarks[0].x and landmarks[0].x < landmarks[17].x)):
-        print("Exit gesture detected, closing in %d seconds..." % (timer))
-        time.sleep(10)
-        timer -= 1
-        if timer == 0:
             return "Exit Game" # middle finger gesture to exit game
     
     if landmarks[0].x < landmarks[9].x:  # Left hand
@@ -124,7 +120,7 @@ with mp_hands.Hands(model_complexity = 0,
                     gametext += "  Player 2 wins!"
             else:
                 gametext = "Round failed! Try again."
-
+    
         # Display clock and game text on video feed
         cv.putText(frame, f"Clock: {clock}", (50,50), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2, cv.LINE_AA) 
         cv.putText(frame, gametext, (50,80), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2, cv.LINE_AA)
@@ -137,7 +133,9 @@ with mp_hands.Hands(model_complexity = 0,
         # Close the program by pressing 'q'
         if cv.waitKey(1) & 0xFF == ord('q'):
             break
-        if gestures and getPlayerMove(gestures[0]) == "Exit Game":
+
+        if gestures and getPlayerMove(gestures[0]) == "Exit Game": # exit gesture detection
+            print("\n\nExit gesture detected, closing program.\n\n")
             break
         
 
