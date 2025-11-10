@@ -21,12 +21,19 @@ mp_drawing_styles = mp.solutions.drawing_styles
 
 def getPlayerMove(hand_landmarks):
     landmarks = hand_landmarks.landmark
-    if all([landmarks[i].y < landmarks[i+3].y for i in range(9,20,4)]): 
-        return "Rock"
-    elif landmarks[13].y < landmarks[16].y and landmarks[17].y < landmarks[20].y:
-        return "Scissors"
-    else:
-        return "Paper"
+    if landmarks[0].x < landmarks[9].x:  # Left hand
+        # Flip x-coordinates for left hand to standardize orientation
+        for lm in landmarks:
+            lm.x = -lm.x
+    if all([landmarks[i+1].x < landmarks[i+3].x for i in range(9,20,4)]): 
+        return "Rock" # uses coordinates of joints to determine if fingers are curled for rock
+    elif (landmarks[14].y < landmarks[16].y and landmarks[18].y < landmarks[20].y) or (landmarks[14].x < landmarks[16].x and landmarks[18].x < landmarks[20].x):
+        return "Scissors" # uses coordinates of joints to determine if ring and pinkie fingers are curled for scissors
+    elif all([landmarks[i+1].x > landmarks[i+3].x for i in range(9,20,4)]):
+        return "Paper" # check joints for if paper
+    else: 
+        return "Unknown"
+
 
 
 # location of video feed may vary
@@ -89,7 +96,7 @@ with mp_hands.Hands(model_complexity = 0,
                 gametext = "Both players show your move!"
                 success = False
         elif clock <130:
-            if success:
+            if success and p1_move != "Unknown" and p2_move != "Unknown":
                 gametext = f"P1: {p1_move}  P2: {p2_move}"
                 if p1_move == p2_move:
                     gametext += "  It's a tie!"
