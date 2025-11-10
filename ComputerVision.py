@@ -5,8 +5,10 @@ import mediapipe as mp
 An older version of python might need to be used to run mediapipe.
 I got it to work with python 3.11.4
 
-pip install mediapipe opencv-python
-
+winget install --id Python.Python.3.11 --version 3.11.4 -e
+py -3.11 -m pip install --upgrade pip setuptools wheel
+py -3.11 -m pip install opencv-python
+py -3.11 -m pip install mediapipe opencv-python
 """
 
 mp_drawing = mp.solutions.drawing_utils
