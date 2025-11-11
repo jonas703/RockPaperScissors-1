@@ -2,31 +2,27 @@ import cv2 as cv
 import mediapipe as mp
 import time
 
-'''
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
-model_path = 'gesture_recognizer.task'
-base_options = BaseOptions(model_asset_path=model_path)
 
 BaseOptions = mp.tasks.BaseOptions
 GestureRecognizer = mp.tasks.vision.GestureRecognizer
 GestureRecognizerOptions = mp.tasks.vision.GestureRecognizerOptions
-GestureRecognizerResult = mp.tasks.vision.GestureRecognizerResult
 VisionRunningMode = mp.tasks.vision.RunningMode
 
-# Create a gesture recognizer instance with the live stream mode:
-def print_result(result: GestureRecognizerResult, output_image: mp.Image, timestamp_ms: int):
-    print('gesture recognition result: {}'.format(result))
-
+# Create a gesture recognizer instance with the video mode:
 options = GestureRecognizerOptions(
-    base_options=BaseOptions(model_asset_path='/path/to/model.task'),
-    running_mode=VisionRunningMode.LIVE_STREAM,
-    result_callback=print_result)
-with GestureRecognizer.create_from_options(options) as recognizer:
+    base_options=BaseOptions(model_asset_path='gesture_recognizer.task'),
+    running_mode=VisionRunningMode.VIDEO,
+    canned_gestures_classifier_options=mp.tasks.vision.CannedGesturesClassifierOptions())
+
+recognizer = vision.GestureRecognizer.create_from_options(options)
+#with GestureRecognizer.create_from_options(options) as recognizer:
   # The detector is initialized. Use it here.
   # ...
-'''
+
+
 
 
 
