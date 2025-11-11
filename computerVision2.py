@@ -4,6 +4,7 @@ import time
 
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
+from mediapipe.framework.formats import image_format_pb2
 
 
 BaseOptions = mp.tasks.BaseOptions
@@ -15,12 +16,14 @@ VisionRunningMode = mp.tasks.vision.RunningMode
 options = GestureRecognizerOptions(
     base_options=BaseOptions(model_asset_path='gesture_recognizer.task'),
     running_mode=VisionRunningMode.VIDEO,
-    canned_gestures_classifier_options=mp.tasks.vision.CannedGesturesClassifierOptions())
+    num_hands=4)
+    
 
 recognizer = vision.GestureRecognizer.create_from_options(options)
+
 #with GestureRecognizer.create_from_options(options) as recognizer:
   # The detector is initialized. Use it here.
-  # ...
+  # ... - i dont think i need this part?
 
 
 
@@ -160,6 +163,22 @@ with mp_hands.Hands(model_complexity = 0,
 
         if not ret or frame is None: break
         frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+
+        # recognizer.recognize(frame) # trying to figure out how to use mediapipe gesture recognizer (not going well)
+            # Convert the frame to the format required by MediaPipe
+        mp_image = vision.Image(
+            image_format=image_format_pb2.ImageFormat.SRGB,
+            data=frame
+        )
+
+        # Perform gesture recognition
+        recognition_result = recognizer.recognize(mp_image)
+
+        # Process and display the results
+        if recognition_result.gestures:
+            for gesture in recognition_result.gestures:
+                print(f"Gesture: {gesture.category_name}, Score: {gesture.score}")
+
 
         results = hands.process(frame)
         if results.multi_hand_landmarks:
