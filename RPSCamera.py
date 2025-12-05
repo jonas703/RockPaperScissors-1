@@ -3,10 +3,13 @@ import numpy as np
 from ultralytics import YOLO
 from RPSLogic import RPSMinus1  # ← IMPORT THE LOGIC ENGINE
 
-modelPath = "runs/detect/rps_yolo11/weights/best.pt"
+modelPath = "C:/Desktop/SOP EE_AI Year III/AI Third Year - Semester 1/AISE 3350A/CompVis/RockPaperScissors-1/runs/detect/rps_yolo11/weights/best.pt"
+
 model = YOLO(modelPath)
 
-cap = cv2.VideoCapture(1)
+# Initialize cv2 camera capture 'cap' for your device
+# iOS -> 1, windows -> 0
+cap = cv2.VideoCapture(0)
 
 # Map YOLO class IDs to R/P/S
 gesture_map = {
@@ -75,12 +78,12 @@ while True:
 
         # Overlay text
 
-        cv2.putText(final_view, text, (850, 40),
+        cv2.putText(final_view, text, (220, 140),   
                     cv2.FONT_HERSHEY_SIMPLEX, 1.7, (0, 0, 0), 3)
     
     cv2.putText(final_view,"Player 1", (20, 40),
                     cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 3)
-    cv2.putText(final_view,"Player 2", (1700, 40),
+    cv2.putText(final_view,"Player 2", (420, 40), 
                     cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 3)
     cv2.imshow("4-Hand Classifier (YOLO + RPS Logic)", final_view)
 
