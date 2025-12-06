@@ -143,7 +143,7 @@ while True:
     # ---------------------------------------------------------
     # PHASE 0: Detect 4 hands (first 5 seconds)
     # ---------------------------------------------------------
-    if elapsed < 5:
+    if elapsed < 10:
 
         p1_choices = []
         p2_choices = []
@@ -184,7 +184,7 @@ while True:
                                 np.hstack((q3, q4))))
 
         outlined_text(final_view,
-                      f"SHOW BOTH HANDS ({5 - int(elapsed)})",
+                      f"SHOW BOTH HANDS ({10 - int(elapsed)})",
                       (850, 40), 1.5, 3)
 
         cv2.imshow("4-Hand Classifier", final_view)
@@ -192,7 +192,7 @@ while True:
     # ---------------------------------------------------------
     # PHASE 1: Player 1 must drop a hand (5–7 sec)
     # ---------------------------------------------------------
-    elif elapsed < 7:
+    elif elapsed < 15:
 
         drop_text = "Analyzing..."
 
@@ -213,7 +213,7 @@ while True:
     # ---------------------------------------------------------
     # PHASE 2: Final single-hand detection (7–12 sec)
     # ---------------------------------------------------------
-    elif elapsed < 12:
+    elif elapsed < 25:
 
         left_half  = frame[:, :w//2]
         right_half = frame[:, w//2:]
@@ -274,7 +274,7 @@ while True:
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
 
         outlined_text(frame,
-                      f"FINAL DETECTION ({12 - int(elapsed)})",
+                      f"FINAL DETECTION ({25 - int(elapsed)})",
                       (30, 50), 1.5, 3)
 
         cv2.imshow("4-Hand Classifier", frame)
