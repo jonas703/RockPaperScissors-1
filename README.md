@@ -8,3 +8,4 @@ RPSLogic gets called to define inputs from camera,
 
 Model used is still in runs/detect/rps_yolo11/weights/best.pt as filepath
 
+AISE3350 Final Project Report.pdf contains a full written report that was used as the basis for the jupyter notebook
