@@ -59,7 +59,7 @@ def RPSMinus1(player1_choices, player2_choices, strategy=3):
     # -----------------------------------------
     # Strategy-weighted scoring
     # -----------------------------------------
-    # values[strategy] = [win_same, lose_same, draw_same, win_other, lose_other, draw_other]
+    # values for different strategies, 1: Aggressive, 2: Defensive, 3: Balanced, 4: Default
     values = {
         1: [2, 1, -0.5, 1.5, 1, -0.5],
         2: [1, -1.5, 0.5, 1, 1, 0.5],
