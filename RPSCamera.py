@@ -10,6 +10,8 @@ from RPSLogic import RPSMinus1
 modelPath = "rps_yolo11/weights/best.pt"
 model = YOLO(modelPath)
 
+cv2Camera = 1 # 0 for all windows computers, set to 1 for mac
+
 gesture_map = {0: "P", 1: "R", 2: "S"}
 
 # ----------------------------------------------------
@@ -56,21 +58,32 @@ if choice == "2":
 
 else:
     print("\nUsing CAMERA input...")
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(cv2Camera)
 
 
 # ----------------------------------------------------
 # Strategy Selection
 # ----------------------------------------------------
-print("\nSelect game strategy (1–4):")
+print("\nSelect game strategy (1:Agressive, 2:Defensive, 3:Balanced, 4:Default):")
 strategy_input = input("Strategy: ").strip()
 if strategy_input not in ["1", "2", "3", "4"]:
-    print("Invalid input — defaulting to strategy 3.")
-    current_strategy = 3
+    print("Invalid input — defaulting to strategy 4.")
+    current_strategy = 4
 else:
     current_strategy = int(strategy_input)
 
-print(f"\nUsing Strategy {current_strategy}\n")
+match current_strategy:
+    case 1:
+        strategy = "Aggressive"
+    case 2:
+        strategy = "Defensive"
+    case 3:
+        strategy = "Balanced"
+    case 4:
+        strategy = "Default"
+
+
+print(f"\nUsing Strategy {strategy}\n")
 
 
 # ----------------------------------------------------
@@ -286,6 +299,7 @@ while True:
             message = "COULD NOT DETECT BOTH HANDS"
 
         outlined_text(frame, message, (200, 200), 2, 4)
+        outlined_text(frame, "Press 'R' to Reset", (200, 400), 2, 4)
         cv2.imshow("4-Hand Classifier", frame)
 
     # ---------------------------------------------------------
